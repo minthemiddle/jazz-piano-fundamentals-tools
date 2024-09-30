@@ -86,27 +86,15 @@ def vamp_practice(chords):
     print("=============")
     print("Creating a 4-chord vamp progression for you to practice.")
 
-    vamp_chords = random.sample(list(chords.keys()), 4)
-    print("\nYour 4-chord vamp progression:")
-    for i, chord in enumerate(vamp_chords, 1):
-        print(f"{i}. {chord}: {chords[chord]}")
+    while True:
+        vamp_chords = random.sample(list(chords.keys()), 4)
+        print("\nYour vamp progression:")
+        for i, chord in enumerate(vamp_chords, 1):
+            print(f"{i}. {chord}: {chords[chord]}")
 
-    print("\nPractice this progression in different rhythms:")
-    print("1. Two measures per chord")
-    print("2. One measure per chord")
-    print("3. Two beats per chord")
-    print("4. One beat per chord")
-
-    input("\nPress Enter when you're ready to start practicing...")
-
-    for rhythm in ["Two measures", "One measure", "Two beats", "One beat"]:
-        print(f"\nPractice with {rhythm} per chord")
-        for _ in range(4):  # Repeat the progression 4 times
-            for chord in vamp_chords:
-                print(chord, end=" ")
-                time.sleep(0.5)  # Pause briefly between chords
-        print("\n")
-        input("Press Enter when you're ready for the next rhythm...")
+        response = input("\nPress Enter to generate a new progression or type 'q' to quit: ").lower()
+        if response == 'q':
+            break
 
 def main():
     chords = generate_chords()
