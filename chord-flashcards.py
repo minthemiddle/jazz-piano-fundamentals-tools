@@ -3,6 +3,15 @@ import time
 import sqlite3
 from datetime import datetime, timedelta
 
+def adapt_datetime(val):
+    return val.isoformat()
+
+def convert_datetime(val):
+    return datetime.fromisoformat(val.decode())
+
+sqlite3.register_adapter(datetime, adapt_datetime)
+sqlite3.register_converter("timestamp", convert_datetime)
+
 def generate_chords():
     roots = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
     chord_types = [
@@ -21,7 +30,7 @@ def generate_chords():
     return chords
 
 def initialize_database():
-    conn = sqlite3.connect('jazz_chords.db')
+    conn = sqlite3.connect('jazz_chords.db', detect_types=sqlite3.PARSE_DECLTYPES)
     c = conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS chord_progress
                  (chord_symbol TEXT PRIMARY KEY, next_review TIMESTAMP, interval INTEGER)''')
@@ -90,11 +99,17 @@ def vamp_practice(chords):
         vamp_chords = random.sample(list(chords.keys()), 4)
         print("\nYour vamp progression:")
         for i, chord in enumerate(vamp_chords, 1):
-            print(f"{i}. {chord}: {chords[chord]}")
+            print(f"{i}. {chord}")
 
-        response = input("\nPress Enter to generate a new progression or type 'q' to quit: ").lower()
+        response = input("\nPress 'n' to generate a new progression, 'h' to show hints, or 'q' to quit: ").lower()
         if response == 'q':
             break
+        elif response == 'h':
+            for i, chord in enumerate(vamp_chords, 1):
+                print(f"{i}. {chord}: {chords[chord]}")
+            input("\nPress Enter to continue...")
+        elif response == 'n':
+            continue
 
 def main():
     chords = generate_chords()
